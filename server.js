@@ -26,10 +26,28 @@ function startPrompt() {
                 "View all employees",
                 "View all employees by role",
                 "View all employees by department",
-                "Add Employee",
+                "Add employee",
+                "Update employee",
                 "Add role",
                 "Add department"
             ]
         }
     ])
+    .then(data => {
+        if (data.choice == "View all employees") {
+            viewAllEmployees()
+        } else if (data.choice == "View all employees by role") {
+            viewAllRoles()
+        } else if (data.choice == "View all employees by department") {
+            viewAllDepartment()
+        } else if (data.choice == "Add employee") {
+            addEmployee()
+        } else if (data.choice == "Update employee") {
+            updateEmployee()
+        } else if (data.choice == "Add role") {
+            addRole()
+        } else if (data.choice == "Add department") {
+            addDepartment()
+        }
+    })
 }
