@@ -9,7 +9,7 @@ INSERT INTO role (title, salary, departmentId)
 VALUES ("Chief Growth Officer", 200000, 1),
     ("Director of Agency Success", 150000, 1),
     ("Relationship Manager", 100000, 1),
-    ("Director of Engineering", 180000, 2),
+    ("Chief Engineer", 200000, 2),
     ("Developer", 120000, 2),
     ("Chief Underwriting Officer", 200000, 3),
     ("Director of Data and Risk", 150000, 3),

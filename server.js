@@ -3,7 +3,6 @@ const inquirer = require('inquirer');
 const mysql = require('mysql2');
 const cTable = require('console.table');
 const express = require('express');
-const exp = require('constants');
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -61,64 +60,71 @@ function startPrompt() {
 
 function viewAllDepartments() {
     db.query("",
-    function(err, res) {
+    function(err, results) {
         if (err) throw err;
-        console.table(res);
+        console.table(results);
         startPrompt()
     })
 }
 
 function viewAllRoles() {
     db.query("",
-    function(err, res) {
+    function(err, results) {
         if (err) throw err;
-        console.table(res);
+        console.table(results);
         startPrompt()
     })
 }
 
 function viewAllEmployees() {
-    db.query("SELECT employee.first, employee.last, role.title, role.salary, department.name, CONCAT(e.first, ' ', e.last) AS manager FROM employee INNER JOIN role ON role.id = employee.roleId INNER JOIN department ON department.id = role.departmentId LEFT JOIN employee e ON employee.managerId = e.id;",
-    function(err, res) {
+    db.query("SELECT employee.first, employee.last, role.title, role.salary, department.name, CONCAT(e.first, ' ', e.last) AS Manager FROM employee INNER JOIN role ON role.id = employee.roleId INNER JOIN department ON department.id = role.departmentId LEFT JOIN employee e ON employee.managerId = e.id;",
+    function(err, results) {
         if (err) throw err;
-        console.table(res);
+        console.table(results);
         startPrompt()
     })
 }
 
 function addDepartment() {
     db.query("",
-    function(err, res) {
+    function(err, results) {
         if (err) throw err;
-        console.table(res);
+        console.table(results);
         startPrompt()
     })
 }
 
 function addRole() {
     db.query("",
-    function(err, res) {
+    function(err, results) {
         if (err) throw err;
-        console.table(res);
+        console.table(results);
         startPrompt()
     })
 }
 
 function addEmployee() {
     db.query("",
-    function(err, res) {
+    function(err, results) {
         if (err) throw err;
-        console.table(res);
+        console.table(results);
         startPrompt()
     })
 }
 
 function updateEmployee() {
     db.query("",
-    function(err, res) {
+    function(err, results) {
         if (err) throw err;
-        console.table(res);
+        console.table(results);
         startPrompt()
     })
 }
 
+app.use((req, results) => {
+    results.status(404).end()
+});
+
+app.listen(PORT, () => {
+    console.log(`Listening on port ${PORT}`)
+});
