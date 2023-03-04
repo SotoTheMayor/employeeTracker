@@ -37,7 +37,7 @@ function startPrompt() {
         if (data.choice == "View all employees") {
             viewAllEmployees()
         } else if (data.choice == "View all employees by role") {
-            viewAllRoles()
+            viewAllRole()
         } else if (data.choice == "View all employees by department") {
             viewAllDepartment()
         } else if (data.choice == "Add employee") {
@@ -49,5 +49,68 @@ function startPrompt() {
         } else if (data.choice == "Add department") {
             addDepartment()
         }
+    })
+}
+
+function viewAllEmployees() {
+    connection.query("",
+    function(err, res) {
+        if (err) throw err;
+        console.table(res);
+        startPrompt()
+    })
+}
+
+function viewAllRole() {
+    connection.query("",
+    function(err, res) {
+        if (err) throw err;
+        console.table(res);
+        startPrompt()
+    })
+}
+
+function viewAllDepartment() {
+    connection.query("",
+    function(err, res) {
+        if (err) throw err;
+        console.table(res);
+        startPrompt()
+    })
+}
+
+function addEmployee() {
+    connection.query("",
+    function(err, res) {
+        if (err) throw err;
+        console.table(res);
+        startPrompt()
+    })
+}
+
+function updateEmployee() {
+    connection.query("",
+    function(err, res) {
+        if (err) throw err;
+        console.table(res);
+        startPrompt()
+    })
+}
+
+function addRole() {
+    connection.query("",
+    function(err, res) {
+        if (err) throw err;
+        console.table(res);
+        startPrompt()
+    })
+}
+
+function addDepartment() {
+    connection.query("",
+    function(err, res) {
+        if (err) throw err;
+        console.table(res);
+        startPrompt()
     })
 }
