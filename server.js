@@ -23,32 +23,50 @@ function startPrompt() {
             message: "What would you like to do?",
             name: "choice",
             choices: [
+                "View all departments",
+                "View all roles",
                 "View all employees",
-                "View all employees by role",
-                "View all employees by department",
-                "Add employee",
-                "Update employee",
-                "Add role",
-                "Add department"
+                "Add a department",
+                "Add a role",
+                "Add an employee",
+                "Update an employee role",
             ]
         }
     ])
     .then(data => {
-        if (data.choice == "View all employees") {
+        if (data.choice == "View all departments") {
+            viewAllDepartments()
+        } else if (data.choice == "View all roles") {
+            viewAllRoles()
+        } else if (data.choice == "View all employees") {
             viewAllEmployees()
-        } else if (data.choice == "View all employees by role") {
-            viewAllRole()
-        } else if (data.choice == "View all employees by department") {
-            viewAllDepartment()
-        } else if (data.choice == "Add employee") {
-            addEmployee()
-        } else if (data.choice == "Update employee") {
-            updateEmployee()
-        } else if (data.choice == "Add role") {
-            addRole()
-        } else if (data.choice == "Add department") {
+        } else if (data.choice == "Add a department") {
             addDepartment()
+        } else if (data.choice == "Add a role") {
+            addRole()
+        } else if (data.choice == "Add an employee") {
+            addEmployee()
+        } else if (data.choice == "Update an employee role") {
+            updateEmployee()
         }
+    })
+}
+
+function viewAllDepartments() {
+    connection.query("",
+    function(err, res) {
+        if (err) throw err;
+        console.table(res);
+        startPrompt()
+    })
+}
+
+function viewAllRoles() {
+    connection.query("",
+    function(err, res) {
+        if (err) throw err;
+        console.table(res);
+        startPrompt()
     })
 }
 
@@ -61,7 +79,7 @@ function viewAllEmployees() {
     })
 }
 
-function viewAllRole() {
+function addDepartment() {
     connection.query("",
     function(err, res) {
         if (err) throw err;
@@ -70,7 +88,7 @@ function viewAllRole() {
     })
 }
 
-function viewAllDepartment() {
+function addRole() {
     connection.query("",
     function(err, res) {
         if (err) throw err;
@@ -97,20 +115,3 @@ function updateEmployee() {
     })
 }
 
-function addRole() {
-    connection.query("",
-    function(err, res) {
-        if (err) throw err;
-        console.table(res);
-        startPrompt()
-    })
-}
-
-function addDepartment() {
-    connection.query("",
-    function(err, res) {
-        if (err) throw err;
-        console.table(res);
-        startPrompt()
-    })
-}
