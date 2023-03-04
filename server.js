@@ -1,17 +1,24 @@
 
 const inquirer = require('inquirer');
-const db = require('mysql2');
-const cTable = require('console.table')
+const mysql = require('mysql2');
+const cTable = require('console.table');
+const express = require('express');
+const exp = require('constants');
 
-const connection = db.createConnection({
+const PORT = process.env.PORT || 3001;
+const app = express();
+
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+
+const db = mysql.createConnection({
     host: "localhost",
-    port: 3001,
     user: "root",
     password: "password",
     database: "employeeTrackerDB"
 });
 
-connection.connect(function(err) {
+db.connect(function(err) {
     if (err) throw err;
     startPrompt()
 });
@@ -53,7 +60,7 @@ function startPrompt() {
 }
 
 function viewAllDepartments() {
-    connection.query("",
+    db.query("",
     function(err, res) {
         if (err) throw err;
         console.table(res);
@@ -62,7 +69,7 @@ function viewAllDepartments() {
 }
 
 function viewAllRoles() {
-    connection.query("",
+    db.query("",
     function(err, res) {
         if (err) throw err;
         console.table(res);
@@ -71,7 +78,7 @@ function viewAllRoles() {
 }
 
 function viewAllEmployees() {
-    connection.query("SELECT employee.first, employee.last, role.title, role.salary, department.name, CONCAT(e.first, ' ', e.last) AS manager FROM employee INNER JOIN role ON role.id = employee.roleId INNER JOIN department ON department.id = role.departmentId LEFT JOIN employee e ON employee.managerId = e.id;",
+    db.query("SELECT employee.first, employee.last, role.title, role.salary, department.name, CONCAT(e.first, ' ', e.last) AS manager FROM employee INNER JOIN role ON role.id = employee.roleId INNER JOIN department ON department.id = role.departmentId LEFT JOIN employee e ON employee.managerId = e.id;",
     function(err, res) {
         if (err) throw err;
         console.table(res);
@@ -80,7 +87,7 @@ function viewAllEmployees() {
 }
 
 function addDepartment() {
-    connection.query("",
+    db.query("",
     function(err, res) {
         if (err) throw err;
         console.table(res);
@@ -89,7 +96,7 @@ function addDepartment() {
 }
 
 function addRole() {
-    connection.query("",
+    db.query("",
     function(err, res) {
         if (err) throw err;
         console.table(res);
@@ -98,7 +105,7 @@ function addRole() {
 }
 
 function addEmployee() {
-    connection.query("",
+    db.query("",
     function(err, res) {
         if (err) throw err;
         console.table(res);
@@ -107,7 +114,7 @@ function addEmployee() {
 }
 
 function updateEmployee() {
-    connection.query("",
+    db.query("",
     function(err, res) {
         if (err) throw err;
         console.table(res);
