@@ -3,6 +3,7 @@ const inquirer = require('inquirer');
 const mysql = require('mysql2');
 const cTable = require('console.table');
 const express = require('express');
+const { concat } = require('rxjs');
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -115,21 +116,90 @@ function viewAllEmployees() {
     })
 }
 
-function addDepartment() {
-    db.query("",
-    function(err, results) {
+let roleArr = [];
+function chooseRole() {
+    db.query("SELECT * FROM role", function(err, result) {
         if (err) throw err;
-        console.table(results);
-        startPrompt()
+        for (let i=0; i<result.length; i++) {
+            roleArr.push(result[i].title)
+        }
+    })
+    return roleArr;
+}
+
+function chooseDept() {
+    let deptArr = [];
+    db.query("SELECT * FROM department", function(err, result) {
+        if (err) throw err;
+        for (let i=0; i<result.length; i++) {
+            deptArr.push(result[i].name)
+        }
+    })
+    console.log(deptArr)
+    return deptArr;
+}
+
+let managerArr = [];
+function chooseManager() {
+    db.query("SELECT first, last FROM employee WHERE managerId is NULL", function(err, result) {
+        if (err) throw err;
+        for (let i=0; i<result.length; i++) {
+            let x = concat(result[i].first + result[i].last);
+            managerArr.push(x)
+        }
+    })
+    return managerArr;
+}
+
+function addDepartment() {
+    inquirer.prompt([
+        {
+            type: "input",
+            message: "What is the department name",
+            name: "department",
+        }
+    ])
+    .then(data => {
+        addDept = {name: data.department};
+        db.query("INSERT INTO department SET ?;", addDept,
+        function(err, results) {
+            if (err) throw err;
+            console.log(addDept)
+            console.log(`Department '${data.department}' added`);
+            startPrompt()
+            })
     })
 }
 
 function addRole() {
-    db.query("",
-    function(err, results) {
-        if (err) throw err;
-        console.table(results);
-        startPrompt()
+    inquirer.prompt([
+        {
+            type: "input",
+            message: "What is the role name?",
+            name: "title"
+        },
+        {
+            type: "input",
+            message: "What is the salary for this role?",
+            name: "salary"
+        },
+        {
+            type: "list",
+            message: "What department does this role belong to?",
+            name: "department",
+            choices: chooseDept()
+        }
+    ])
+    .then(data => {
+        let x;
+        x = data.department.indexOf(data.department) + 1;
+        addNew = { title: data.title, salary: data.salary, departmentId: x }
+        db.query("INSERT INTO role SET ?;", addNew,
+        function(err, results) {
+            if (err) throw err;
+            console.log(`Role '${data.title}' added`);
+            startPrompt()
+            })
     })
 }
 
