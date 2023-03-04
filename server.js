@@ -77,11 +77,41 @@ function viewAllRoles() {
 }
 
 function viewAllEmployees() {
-    db.query("SELECT employee.first AS 'First Name', employee.last AS 'Last Name', role.title AS Role, role.salary AS Salary, department.name AS Department, CONCAT(boss.first, ' ', boss.last) AS Manager FROM employee JOIN role ON employee.roleID = role.id JOIN department ON role.departmentID = department.id LEFT JOIN employee boss ON employee.managerId = boss.roleId;",
-    function(err, results) {
-        if (err) throw err;
-        console.table(results);
-        startPrompt()
+    inquirer.prompt([
+        {
+            type: "list",
+            message: "How should employees be ordered",
+            name: "order",
+            choices: [
+                "By departments",
+                "By manager",
+                "By ID"
+            ]
+        }
+    ])
+    .then(data => {
+        if (data.order == "By departments") {
+            db.query("SELECT employee.id AS 'ID', employee.first AS 'First Name', employee.last AS 'Last Name', role.title AS 'Job Title', department.name AS Department, role.salary AS Salary, CONCAT(boss.first, ' ', boss.last) AS Manager FROM employee JOIN role ON employee.roleID = role.id JOIN department ON role.departmentID = department.id LEFT JOIN employee boss ON employee.managerId = boss.roleId ORDER BY department.name;",
+            function(err, results) {
+                if (err) throw err;
+                console.table(results);
+                startPrompt()
+            })
+        } else if (data.order == "By manager") {
+            db.query("SELECT employee.id AS 'ID', employee.first AS 'First Name', employee.last AS 'Last Name', role.title AS 'Job Title', department.name AS Department, role.salary AS Salary, CONCAT(boss.first, ' ', boss.last) AS Manager FROM employee JOIN role ON employee.roleID = role.id JOIN department ON role.departmentID = department.id LEFT JOIN employee boss ON employee.managerId = boss.roleId ORDER BY boss.roleId;",
+            function(err, results) {
+                if (err) throw err;
+                console.table(results);
+                startPrompt()
+            })
+        } else if (data.order == "By ID") {
+            db.query("SELECT employee.id AS 'ID', employee.first AS 'First Name', employee.last AS 'Last Name', role.title AS 'Job Title', department.name AS Department, role.salary AS Salary, CONCAT(boss.first, ' ', boss.last) AS Manager FROM employee JOIN role ON employee.roleID = role.id JOIN department ON role.departmentID = department.id LEFT JOIN employee boss ON employee.managerId = boss.roleId ORDER BY employee.id;",
+            function(err, results) {
+                if (err) throw err;
+                console.table(results);
+                startPrompt()
+            })
+        }
     })
 }
 
