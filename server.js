@@ -11,3 +11,25 @@ const connection = mysql.createConnection({
     database: "employeeTrackerDB"
 });
 
+connection.connect(function(err) {
+    if (err) throw err;
+    startPrompt()
+});
+
+function startPrompt() {
+    inquirer.prompt([
+        {
+            type: "list",
+            message: "What would you like to do?",
+            name: "choice",
+            choices: [
+                "View all employees",
+                "View all employees by role",
+                "View all employees by department",
+                "Add Employee",
+                "Add role",
+                "Add department"
+            ]
+        }
+    ])
+}
