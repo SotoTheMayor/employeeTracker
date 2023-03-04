@@ -59,7 +59,7 @@ function startPrompt() {
 }
 
 function viewAllDepartments() {
-    db.query("",
+    db.query("SELECT department.name AS 'Department Name', department.id AS 'Department ID' FROM department",
     function(err, results) {
         if (err) throw err;
         console.table(results);
@@ -68,7 +68,7 @@ function viewAllDepartments() {
 }
 
 function viewAllRoles() {
-    db.query("",
+    db.query("SELECT title AS 'Job Title', role.id AS 'Role ID', name AS Department, salary AS Salary FROM role LEFT JOIN department ON role.departmentId = department.id",
     function(err, results) {
         if (err) throw err;
         console.table(results);
@@ -77,7 +77,7 @@ function viewAllRoles() {
 }
 
 function viewAllEmployees() {
-    db.query("SELECT employee.first, employee.last, role.title, role.salary, department.name, CONCAT(boss.first, ' ', boss.last) AS Manager FROM employee JOIN role ON employee.roleID = role.id JOIN department ON role.departmentID = department.id LEFT JOIN employee boss ON employee.managerId = boss.roleId;",
+    db.query("SELECT employee.first AS 'First Name', employee.last AS 'Last Name', role.title AS Role, role.salary AS Salary, department.name AS Department, CONCAT(boss.first, ' ', boss.last) AS Manager FROM employee JOIN role ON employee.roleID = role.id JOIN department ON role.departmentID = department.id LEFT JOIN employee boss ON employee.managerId = boss.roleId;",
     function(err, results) {
         if (err) throw err;
         console.table(results);
