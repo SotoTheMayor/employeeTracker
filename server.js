@@ -3,7 +3,6 @@ const inquirer = require('inquirer');
 const mysql = require('mysql2');
 const cTable = require('console.table');
 const express = require('express');
-const { concat } = require('rxjs');
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -135,7 +134,6 @@ function chooseDept() {
             deptArr.push(result[i].name)
         }
     })
-    console.log(deptArr)
     return deptArr;
 }
 
@@ -164,8 +162,7 @@ function addDepartment() {
         db.query("INSERT INTO department SET ?;", addDept,
         function(err, results) {
             if (err) throw err;
-            console.log(addDept)
-            console.log(`Department '${data.department}' added`);
+            console.log(`********Department '${data.department}' successfully added********`);
             startPrompt()
             })
     })
@@ -197,7 +194,7 @@ function addRole() {
         db.query("INSERT INTO role SET ?;", addNew,
         function(err, results) {
             if (err) throw err;
-            console.log(`Role '${data.title}' added`);
+            console.log(`********Role '${data.title}' successfully added*********`);
             startPrompt()
             })
     })
