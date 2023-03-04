@@ -3,3 +3,19 @@ DROP DATABASE IF EXISTS employeeTrackerDB;
 CREATE DATABASE employeeTrackerDB;
 
 USE employeeTrackerDB;
+
+CREATE TABLE department (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100)
+);
+
+CREATE TABLE role (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100)
+);
+
+CREATE TABLE employee (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100)
+);
+

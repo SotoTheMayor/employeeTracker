@@ -53,7 +53,7 @@ function startPrompt() {
 }
 
 function viewAllEmployees() {
-    connection.query("",
+    connection.query("SELECT employee.first, employee.last, role.title, role.salary, department.name, CONCAT(e.first, ' ', e.last) AS manager FROM employee INNER JOIN role ON role.id = employee.roleId INNER JOIN department ON department.id = role.departmentId LEFT JOIN employee e ON employee.managerId = e.id;",
     function(err, res) {
         if (err) throw err;
         console.table(res);
