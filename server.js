@@ -159,14 +159,12 @@ function chooseEmployee() {
     db.query("SELECT * FROM employee", function(err, result) {
         if (err) throw err;
         for (var i=0; i<result.length; i++) {
-            var x = `${result[i].first}` + " " + `${result[i].last}`;
+            var x = result[i].first + " " + result[i].last;
             employeeArr.push(x)
         }
-        // console.log(employeeArr)
     })
     return employeeArr;
 }
-chooseEmployee();
 
 //called when Add a Department is selected from the main menu
 function addDepartment() {
@@ -284,7 +282,7 @@ function updateEmployee() {
         //pairs chosen manager and role to respective array index number for setting IDs
         var x = chooseEmployee().indexOf(data.employee) + 1;
         var y = chooseRole().indexOf(data.role) + 1;
-        updatedEmployee = [y, x]
+        var updatedEmployee = [y, x]
         db.query(`UPDATE employee SET roleId=? WHERE id=?;`, updatedEmployee,
         function(err, results) {
             if (err) throw err;
