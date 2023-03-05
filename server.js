@@ -153,6 +153,21 @@ function chooseManager() {
     return managerArr;
 }
 
+//function for creating an array of Employees to call later when updating an employee
+let employeeArr = [];
+function chooseEmployee() {
+    db.query("SELECT * FROM employee", function(err, result) {
+        if (err) throw err;
+        for (var i=0; i<result.length; i++) {
+            var x = `${result[i].first}` + " " + `${result[i].last}`;
+            employeeArr.push(x)
+        }
+        // console.log(employeeArr)
+    })
+    return employeeArr;
+}
+chooseEmployee();
+
 //called when Add a Department is selected from the main menu
 function addDepartment() {
     inquirer.prompt([
@@ -249,13 +264,33 @@ function addEmployee() {
     })
 }
 
-//called when Update and Employee is selected from the main menu
+//called when Update an Employee is selected from the main menu
 function updateEmployee() {
-    db.query("",
-    function(err, results) {
-        if (err) throw err;
-        console.table(results);
-        startPrompt()
+    inquirer.prompt([
+        {
+            type: "list",
+            message: "Which employee would you like to update?",
+            name: "employee",
+            choices: chooseEmployee()
+        },
+        {
+            type: "list",
+            message: "What is the employee's updated role?",
+            name: "role",
+            choices: chooseRole()
+        }
+    ])
+    .then(data => {
+        //pairs chosen manager and role to respective array index number for setting IDs
+        var x = chooseEmployee().indexOf(data.employee) + 1;
+        var y = chooseRole().indexOf(data.role) + 1;
+        updatedEmployee = [y, x]
+        db.query(`UPDATE employee SET roleId=? WHERE id=?;`, updatedEmployee,
+        function(err, results) {
+            if (err) throw err;
+            console.log(`********Employee ${x} successfully added*********`);
+            startPrompt()
+            })
     })
 }
 
