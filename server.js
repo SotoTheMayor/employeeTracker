@@ -2,13 +2,6 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
 const cTable = require('console.table');
-const express = require('express');
-
-const PORT = process.env.PORT || 3001;
-const app = express();
-
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
 
 const db = mysql.createConnection({
     host: "localhost",
@@ -17,11 +10,13 @@ const db = mysql.createConnection({
     database: "employeeTrackerDB"
 });
 
+//begins application
 db.connect(function(err) {
     if (err) throw err;
     startPrompt()
 });
 
+//main menu and function
 function startPrompt() {
     inquirer.prompt([
         {
@@ -35,7 +30,7 @@ function startPrompt() {
                 "Add a department",
                 "Add a role",
                 "Add an employee",
-                "Update an employee role",
+                "Update an employee role"
             ]
         }
     ])
@@ -58,6 +53,7 @@ function startPrompt() {
     })
 }
 
+//called when View All Departments is selected from main menu
 function viewAllDepartments() {
     db.query("SELECT department.name AS 'Department Name', department.id AS 'Department ID' FROM department",
     function(err, results) {
@@ -67,6 +63,7 @@ function viewAllDepartments() {
     })
 }
 
+//called when View All Roles is selected from main menu
 function viewAllRoles() {
     db.query("SELECT title AS 'Job Title', role.id AS 'Role ID', name AS Department, salary AS Salary FROM role LEFT JOIN department ON role.departmentId = department.id",
     function(err, results) {
@@ -76,7 +73,9 @@ function viewAllRoles() {
     })
 }
 
+//called with View All Employees is selected from main menu
 function viewAllEmployees() {
+    //provides an employee sorting option
     inquirer.prompt([
         {
             type: "list",
@@ -90,6 +89,7 @@ function viewAllEmployees() {
         }
     ])
     .then(data => {
+        //sorts data based on option selected
         if (data.order == "By departments") {
             db.query("SELECT employee.id AS 'ID', employee.first AS 'First Name', employee.last AS 'Last Name', role.title AS 'Job Title', department.name AS Department, role.salary AS Salary, CONCAT(boss.first, ' ', boss.last) AS Manager FROM employee JOIN role ON employee.roleID = role.id JOIN department ON role.departmentID = department.id LEFT JOIN employee boss ON employee.managerId = boss.roleId ORDER BY department.name;",
             function(err, results) {
@@ -115,40 +115,45 @@ function viewAllEmployees() {
     })
 }
 
+//function for creating an array of Roles to call later when creating an employee
 let roleArr = [];
 function chooseRole() {
     db.query("SELECT * FROM role", function(err, result) {
         if (err) throw err;
-        for (let i=0; i<result.length; i++) {
+        for (var i=0; i<result.length; i++) {
             roleArr.push(result[i].title)
         }
     })
     return roleArr;
 }
 
+//function for creating an array of Departments to call later when creating a role
+let deptArr = [];
 function chooseDept() {
-    let deptArr = [];
     db.query("SELECT * FROM department", function(err, result) {
         if (err) throw err;
-        for (let i=0; i<result.length; i++) {
+        for (var i=0; i<result.length; i++) {
             deptArr.push(result[i].name)
         }
     })
     return deptArr;
 }
 
+//function for creating an array of Managers to call later when creating an employee
 let managerArr = [];
 function chooseManager() {
-    db.query("SELECT first, last FROM employee WHERE managerId is NULL", function(err, result) {
+    db.query("SELECT first, last FROM employee WHERE managerId IS NULL", function(err, result) {
         if (err) throw err;
-        for (let i=0; i<result.length; i++) {
-            let x = concat(result[i].first + result[i].last);
+        for (var i=0; i<result.length; i++) {
+            var x = result[i].first + " " + result[i].last;
             managerArr.push(x)
         }
+        managerArr.push("null")
     })
     return managerArr;
 }
 
+//called when Add a Department is selected from the main menu
 function addDepartment() {
     inquirer.prompt([
         {
@@ -168,6 +173,7 @@ function addDepartment() {
     })
 }
 
+//called when Add a Role is selected from the main menu
 function addRole() {
     inquirer.prompt([
         {
@@ -188,8 +194,8 @@ function addRole() {
         }
     ])
     .then(data => {
-        let x;
-        x = data.department.indexOf(data.department) + 1;
+        //pairs chosen dept to array index number for setting departmentId
+        var x = chooseDept().indexOf(data.department) + 1;
         addNew = { title: data.title, salary: data.salary, departmentId: x }
         db.query("INSERT INTO role SET ?;", addNew,
         function(err, results) {
@@ -200,15 +206,50 @@ function addRole() {
     })
 }
 
+//called when Add an Employee is selected from the main menu
 function addEmployee() {
-    db.query("",
-    function(err, results) {
-        if (err) throw err;
-        console.table(results);
-        startPrompt()
+    inquirer.prompt([
+        {
+            type: "input",
+            message: "What is the employee's first name?",
+            name: "first"
+        },
+        {
+            type: "input",
+            message: "What is the employee's last name?",
+            name: "last"
+        },
+        {
+            type: "list",
+            message: "What is the employee's role?",
+            name: "role",
+            choices: chooseRole()
+        },
+        {
+            type: "list",
+            message: "Who is the employee's manager (choose 'null' for department leader)?",
+            name: "manager",
+            choices: chooseManager()
+        }
+    ])
+    .then(data => {
+        //pairs chosen manager and role to respective array index number for setting IDs
+        var x = chooseManager().indexOf(data.manager) + 1;
+        var y = chooseRole().indexOf(data.role) + 1;
+        if (data.manager == 'null') {
+            x = null
+        }
+        addNew = { first: data.first, last: data.last, managerId: x, roleId: y }
+        db.query("INSERT INTO employee SET ?;", addNew,
+        function(err, results) {
+            if (err) throw err;
+            console.log(`********Employee '${data.first} ${data.last}' successfully added*********`);
+            startPrompt()
+            })
     })
 }
 
+//called when Update and Employee is selected from the main menu
 function updateEmployee() {
     db.query("",
     function(err, results) {
@@ -218,10 +259,3 @@ function updateEmployee() {
     })
 }
 
-app.use((req, results) => {
-    results.status(404).end()
-});
-
-app.listen(PORT, () => {
-    console.log(`Listening on port ${PORT}`)
-});
