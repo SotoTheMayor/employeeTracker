@@ -421,6 +421,11 @@ function deleteItems() {
     })
 }
 
+//look up department based on selection
+//look up roles within the selected department
+//look up all employees with those roles
+//add all salaries of all employees with those roles together
+
 // function budget() {
 //     inquirer.prompt([
 //         {
@@ -453,3 +458,4 @@ function deleteItems() {
 //         }
 //     })
 // }
+
