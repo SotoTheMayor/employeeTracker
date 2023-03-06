@@ -1,3 +1,4 @@
+-- seed data for testing, do not need to initialize if you want to generate your own --
 INSERT INTO department (name)
 VALUES ("Growth"),
     ("Engineering"),

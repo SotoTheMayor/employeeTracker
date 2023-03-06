@@ -10,7 +10,7 @@ const db = mysql.createConnection({
     database: "employeeTrackerDB"
 });
 
-//begins application
+//connects to mysql and begins application
 db.connect(function(err) {
     if (err) throw err;
     startPrompt()
@@ -30,7 +30,9 @@ function startPrompt() {
                 "Add a department",
                 "Add a role",
                 "Add an employee",
-                "Update an employee role"
+                "Update an employee role",
+                "Delete a department, role, or employee",
+                "View salary budget by department"
             ]
         }
     ])
@@ -49,6 +51,10 @@ function startPrompt() {
             addEmployee()
         } else if (data.choice == "Update an employee role") {
             updateEmployee()
+        } else if (data.choice == "Delete a department, role, or employee") {
+            deleteItems()
+        } else if (data.choice == "View salary budget by department") {
+            budget()
         }
     })
 }
@@ -266,6 +272,11 @@ function addEmployee() {
 function updateEmployee() {
     inquirer.prompt([
         {
+            type: "input",
+            name: "pause",
+            message: "Press Enter"
+        },
+        {
             type: "list",
             message: "Which employee would you like to update?",
             name: "employee",
@@ -286,9 +297,122 @@ function updateEmployee() {
         db.query(`UPDATE employee SET roleId=? WHERE id=?;`, updatedEmployee,
         function(err, results) {
             if (err) throw err;
-            console.log(`********Employee ${x} successfully added*********`);
+            console.log(`********Employee ${x} successfully updated*********`);
             startPrompt()
             })
     })
 }
 
+//called with View All Employees is selected from main menu
+function deleteItems() {
+    //provides an employee sorting option
+    inquirer.prompt([
+        {
+            type: "list",
+            message: "Which would you like to delete?",
+            name: "delete",
+            choices: [
+                "Department",
+                "Role",
+                "Employee",
+                "Return"
+            ]
+        }
+    ])
+    .then(data => {
+        //sorts data based on option selected
+        if (data.delete == "Department") {
+            inquirer.prompt([
+                {
+                    type: "input",
+                    name: "pause",
+                    message: "Press Enter"
+                },
+                {
+                    type: "list",
+                    message: "Which department would you like to delete?",
+                    name: "deleteDept",
+                    choices: chooseDept()
+                }
+            ]).then(data => {
+                db.query('SET FOREIGN_KEY_CHECKS=0',
+                function(err, results){
+                    if (err) throw err
+                })
+                var x = chooseDept().indexOf(data.deleteDept) + 1;
+                db.query(`DELETE FROM department WHERE department.id=${x};`,
+                function(err, results) {
+                    if (err) throw err;
+                    console.table(results);
+                    startPrompt()
+                })
+                db.query('SET FOREIGN_KEY_CHECKS=1',
+                function(err, results){
+                    if (err) throw err
+                })
+            })
+        } else if (data.delete == "Role") {
+            inquirer.prompt([
+                {
+                    type: "input",
+                    name: "pause",
+                    message: "Press Enter"
+                },
+                {
+                    type: "list",
+                    message: "Which role would you like to delete?",
+                    name: "deleteRole",
+                    choices: chooseRole()
+                }
+            ]).then(data => {
+                db.query('SET FOREIGN_KEY_CHECKS=0',
+                function(err, results){
+                    if (err) throw err
+                })
+                var x = chooseRole().indexOf(data.deleteRole) + 1;
+                db.query(`DELETE FROM role WHERE role.id=${x};`,
+                function(err, results) {
+                    if (err) throw err;
+                    console.table(results);
+                    startPrompt()
+                })
+                db.query('SET FOREIGN_KEY_CHECKS=1',
+                function(err, results){
+                    if (err) throw err
+                })
+            })
+        } else if (data.delete == "Employee") {
+            inquirer.prompt([
+                {
+                    type: "input",
+                    name: "pause",
+                    message: "Press Enter"
+                },
+                {
+                    type: "list",
+                    message: "Which employee would you like to delete?",
+                    name: "deleteEE",
+                    choices: chooseEmployee()
+                }
+            ]).then(data => {
+                db.query('SET FOREIGN_KEY_CHECKS=0',
+                function(err, results){
+                    if (err) throw err
+                })
+                var x = chooseEmployee().indexOf(data.deleteEE) + 1;
+                db.query(`DELETE FROM employee WHERE employee.id=${x};`,
+                function(err, results) {
+                    if (err) throw err;
+                    console.table(results);
+                    startPrompt()
+                })
+                db.query('SET FOREIGN_KEY_CHECKS=1',
+                function(err, results){
+                    if (err) throw err
+                })
+            })
+        } else if (data.delete == "Return") {
+            startPrompt()
+        }
+    })
+}
