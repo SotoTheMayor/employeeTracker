@@ -303,9 +303,8 @@ function updateEmployee() {
     })
 }
 
-//called with View All Employees is selected from main menu
+//called when Delete is selected from main menu
 function deleteItems() {
-    //provides an employee sorting option
     inquirer.prompt([
         {
             type: "list",
@@ -320,7 +319,6 @@ function deleteItems() {
         }
     ])
     .then(data => {
-        //sorts data based on option selected
         if (data.delete == "Department") {
             inquirer.prompt([
                 {
@@ -335,6 +333,7 @@ function deleteItems() {
                     choices: chooseDept()
                 }
             ]).then(data => {
+                //disables keys to allow delete
                 db.query('SET FOREIGN_KEY_CHECKS=0',
                 function(err, results){
                     if (err) throw err
@@ -346,6 +345,7 @@ function deleteItems() {
                     console.table(results);
                     startPrompt()
                 })
+                //reenables keys
                 db.query('SET FOREIGN_KEY_CHECKS=1',
                 function(err, results){
                     if (err) throw err
@@ -365,6 +365,7 @@ function deleteItems() {
                     choices: chooseRole()
                 }
             ]).then(data => {
+                //disables keys to allow delete
                 db.query('SET FOREIGN_KEY_CHECKS=0',
                 function(err, results){
                     if (err) throw err
@@ -376,6 +377,7 @@ function deleteItems() {
                     console.table(results);
                     startPrompt()
                 })
+                //reenables keys
                 db.query('SET FOREIGN_KEY_CHECKS=1',
                 function(err, results){
                     if (err) throw err
@@ -395,6 +397,7 @@ function deleteItems() {
                     choices: chooseEmployee()
                 }
             ]).then(data => {
+                //disables keys to allow delete
                 db.query('SET FOREIGN_KEY_CHECKS=0',
                 function(err, results){
                     if (err) throw err
@@ -406,6 +409,7 @@ function deleteItems() {
                     console.table(results);
                     startPrompt()
                 })
+                //reenables keys
                 db.query('SET FOREIGN_KEY_CHECKS=1',
                 function(err, results){
                     if (err) throw err
@@ -416,3 +420,36 @@ function deleteItems() {
         }
     })
 }
+
+// function budget() {
+//     inquirer.prompt([
+//         {
+//             type: "input",
+//             name: "pause",
+//             message: "Press Enter"
+//         },
+//         {
+//             type: "list",
+//             message: "Which department's salary budget would you like to view?",
+//             name: "budget",
+//             choices: chooseDept()
+//         }
+//     ]).then(data => {
+//         if (data.budget) {
+//             var x = chooseDept().indexOf(data.budget) + 1;
+//             db.query(`SELECT * FROM role WHERE role.departmentId=${x}`, function(err, result) {
+//                 if (err) throw err;
+//                 for (var i=0; i<result.length; i++) {
+//                     deptArr.push(result[i].name)
+//                 }
+//             })
+//             db.query(`SELECT * FROM employee WHERE employee.roleId=${data.budget}`, function(err, result) {
+//                 if (err) throw err;
+//                 for (var i=0; i<result.length; i++) {
+//                     deptArr.push(result[i].name)
+//                 }
+//             })
+
+//         }
+//     })
+// }
