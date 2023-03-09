@@ -16,7 +16,7 @@ db.connect(function(err) {
     startPrompt()
 });
 
-//main menu and function
+//main menu
 function startPrompt() {
     inquirer.prompt([
         {
@@ -31,8 +31,7 @@ function startPrompt() {
                 "Add a role",
                 "Add an employee",
                 "Update an employee role",
-                "Delete a department, role, or employee",
-                "View salary budget by department"
+                "Delete a department, role, or employee"
             ]
         }
     ])
@@ -53,8 +52,6 @@ function startPrompt() {
             updateEmployee()
         } else if (data.choice == "Delete a department, role, or employee") {
             deleteItems()
-        } else if (data.choice == "View salary budget by department") {
-            budget()
         }
     })
 }
@@ -421,41 +418,5 @@ function deleteItems() {
     })
 }
 
-//look up department based on selection
-//look up roles within the selected department
-//look up all employees with those roles
-//add all salaries of all employees with those roles together
 
-// function budget() {
-//     inquirer.prompt([
-//         {
-//             type: "input",
-//             name: "pause",
-//             message: "Press Enter"
-//         },
-//         {
-//             type: "list",
-//             message: "Which department's salary budget would you like to view?",
-//             name: "budget",
-//             choices: chooseDept()
-//         }
-//     ]).then(data => {
-//         if (data.budget) {
-//             var x = chooseDept().indexOf(data.budget) + 1;
-//             db.query(`SELECT * FROM role WHERE role.departmentId=${x}`, function(err, result) {
-//                 if (err) throw err;
-//                 for (var i=0; i<result.length; i++) {
-//                     deptArr.push(result[i].name)
-//                 }
-//             })
-//             db.query(`SELECT * FROM employee WHERE employee.roleId=${data.budget}`, function(err, result) {
-//                 if (err) throw err;
-//                 for (var i=0; i<result.length; i++) {
-//                     deptArr.push(result[i].name)
-//                 }
-//             })
-
-//         }
-//     })
-// }
 
